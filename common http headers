@@ -1,0 +1,36 @@
+ General Headers
+
+- `Date`: Date and time the message was sent
+- `Connection`: Control options for the current connection (`keep-alive`, `close`). connection controls whether to reuse current tcp or close it
+- `Cache-Control`: Caching policies (`no-cache`, `max-age`, etc.)
+- `Pragma`: Legacy caching control
+- `Transfer-Encoding`: Encoding used for the message body (e.g. `chunked`)
+- `Via`: Information about intermediate proxies/gateways
+
+
+Request Headers
+
+- `Host`: Domain name and port of the server
+- `User-Agent`: Info about the client (browser, device, etc.)
+- `Accept`: Content types the client can handle (`text/html`, `application/json`, etc.)
+- `Accept-Encoding`: Compression types the client can accept (`gzip`, `deflate`)
+- `Accept-Language`: Preferred languages
+- `Authorization`: Credentials for authentication (`Bearer <token>`, `Basic`)
+- `Cookie`: Sends cookies to the server. cookies will be send for every request, can be used for storing user login info
+- `Referer`: URL of the page that made the request.
+- `Origin`: Origin of the request, used in CORS. origin -> scheme(protocol) + hostname + port
+- `If-Modified-Since`: Conditional GET request. only send resource when its modified after a date.
+- `Range`: Request partial content (e.g., `bytes=0-499`)
+
+
+Response Headers
+
+- `Server`: Info about the server software
+- `Set-Cookie`: Sends cookies to the client
+- `Location`: Redirect location
+- `Content-Type`: Type of the returned content (`application/json`, `text/html`)
+- `Content-Length`: Size of the response body in bytes
+- `Content-Encoding`: Compression method used on the response body
+- `Access-Control-Allow-Origin`: CORS settings
+- `ETag`: Identifier for a specific version of a resource
+- `Last-Modified`: When the resource was last modified
