@@ -12,14 +12,30 @@ public class OrderHttpServlet extends HttpServlet {
     private final OrderDAO orderDAO = new OrderDAO();
 
     protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        // Create user using JDBC
-        int id = Integer.parseInt(req.getParameter("id"));
-        double amount = Double.parseDouble(req.getParameter("amount"));
-        String item = req.getParameter("item");
+        String methodOverride = req.getParameter("_method");
 
         try {
-            orderDAO.createOrder(new Order(id, item, amount));
-            res.getWriter().write("order created");
+            if (methodOverride != null) {
+                switch (methodOverride.toUpperCase()) {
+                    case "PUT":
+                        doPut(req, res);
+                        return;
+                    case "DELETE":
+                        doDelete(req, res);
+                        return;
+                }
+            }
+
+            int id = Integer.parseInt(req.getParameter("id"));
+            String item = req.getParameter("item");
+            double amount = Double.parseDouble(req.getParameter("amount"));
+
+            Order order = new Order(id, item, amount);
+            orderDAO.createOrder(order);
+            Order newOrder = orderDAO.getOrder(id);
+            req.setAttribute("order", newOrder);
+            req.getRequestDispatcher("/create-order.jsp").forward(req, res);
+
         } catch (Exception e) {
             res.sendError(500, "Error: " + e.getMessage());
         }
@@ -31,9 +47,11 @@ public class OrderHttpServlet extends HttpServlet {
         try {
             Order order = orderDAO.getOrder(id);
             if (order != null) {
-                res.getWriter().write("Order id: " + order.getId() + ", " + "Item: " + order.getItem() + ", " +  "Amount: " + order.getAmount());
+                req.setAttribute("order", order);              // data to show
+                req.getRequestDispatcher("/get-order.jsp").forward(req, res);
             } else {
-                res.getWriter().write("Order not found");
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+
             }
         } catch (Exception e) {
             res.sendError(500, "Error: " + e.getMessage());
@@ -41,7 +59,6 @@ public class OrderHttpServlet extends HttpServlet {
     }
 
     protected void doPut(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        // Update user using JDBC
         int id = Integer.parseInt(req.getParameter("id"));
         double amount = Double.parseDouble(req.getParameter("amount"));
         String item = req.getParameter("item");
@@ -49,18 +66,28 @@ public class OrderHttpServlet extends HttpServlet {
         try {
             Order order = new Order(id, item, amount);
             orderDAO.updateOrder(order);
-            res.getWriter().write("Order updated");
+            Order updatedOrder = orderDAO.getOrder(id);
+            req.setAttribute("order", updatedOrder);
+            req.getRequestDispatcher("/update-order.jsp").forward(req, res);
         } catch (Exception e) {
             res.sendError(500, "Error: " + e.getMessage());
         }
     }
 
     protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        // Delete user using JDBC
         int id = Integer.parseInt(req.getParameter("id"));
         try {
+            Order order = orderDAO.getOrder(id); // Get before deleting
+            if (order == null) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+                return;
+            }
+
             orderDAO.deleteOrder(id);
-            res.getWriter().write("Order deleted");
+
+            req.setAttribute("order", order);             // for showing on JSP
+            req.setAttribute("action", "Delete");
+            req.getRequestDispatcher("/delete-order.jsp").forward(req, res);
         } catch (Exception e) {
             res.sendError(500, "Error: " + e.getMessage());
         }

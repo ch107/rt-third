@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+
+//DAO -> Data Access Object. It’s a design pattern used to separate database logic from business logic in your application.
 public class OrderDAO {
     private Connection getConnection() throws SQLException {
         return DBConnectionPool.getDataSource().getConnection();
