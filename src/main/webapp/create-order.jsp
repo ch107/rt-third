@@ -12,7 +12,8 @@
     <title>Create an Order</title>
 </head>
 <body>
-<form action="order" method="post">
+<%--action="order" -> Send the request to the URL path /order--%>
+<form action="order" method="post"> Send the request to the URL path /order
   <input type="hidden" name="_method" value="POST"/>
   ID: <input type="text" name="id"><br/>
   Item: <input type="text" name="item"><br/>

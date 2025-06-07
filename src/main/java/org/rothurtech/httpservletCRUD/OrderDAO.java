@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 //DAO -> Data Access Object. It’s a design pattern used to separate database logic from business logic in your application.
@@ -32,6 +34,25 @@ public class OrderDAO {
             }
         }
         return null;
+    }
+
+    public List<Order> getAllOrders() throws SQLException {
+        List<Order> orders = new ArrayList<>();
+        String sql = "SELECT * FROM orders";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) { // stmt.executeQuery() block the current thread
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String item = rs.getString("item");
+                double amount = rs.getDouble("amount");
+                orders.add(new Order(id, item, amount));
+            }
+        }
+        System.out.println("Orders retrieved: " + orders.size());
+        return orders;
     }
 
     public void updateOrder(Order order) throws SQLException {

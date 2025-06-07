@@ -15,9 +15,11 @@
 <h2>Order Management</h2>
 <ul>
     <li><a href="create-order.jsp">Create Order</a></li>
+    <li><a href="order">Get All Orders</a></li>
     <li><a href="get-order.jsp">Get Order by ID</a></li>
     <li><a href="update-order.jsp">Update Order</a></li>
-    <li><a href="delete-order.jsp">Delete Order</a></li>
+    <li><a href="get-order.jsp">Get Order by ID</a></li>
+
 </ul>
 </body>
 </html>

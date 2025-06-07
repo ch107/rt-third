@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/order")
 public class OrderHttpServlet extends HttpServlet {
@@ -42,16 +43,22 @@ public class OrderHttpServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        // Read user(s) using JDBC
-        int id = Integer.parseInt(req.getParameter("id"));
+        String idParam = req.getParameter("id");
         try {
-            Order order = orderDAO.getOrder(id);
-            if (order != null) {
-                req.setAttribute("order", order);              // data to show
-                req.getRequestDispatcher("/get-order.jsp").forward(req, res);
-            } else {
-                res.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
-
+            if (idParam != null) { // get by id
+                int id = Integer.parseInt(idParam);
+                Order order = orderDAO.getOrder(id);
+                if (order != null) {
+                    req.setAttribute("order", order);
+                    req.getRequestDispatcher("/get-order.jsp").forward(req, res);
+                } else {
+                    res.sendError(HttpServletResponse.SC_NOT_FOUND, "Order not found");
+                }
+            } else { // get all
+                List<Order> orders = orderDAO.getAllOrders();
+                req.setAttribute("orders", orders);
+                //logging logic ---> request information: user inputs(httprequest)? + what's the success result
+                req.getRequestDispatcher("/all-orders.jsp").forward(req, res);
             }
         } catch (Exception e) {
             res.sendError(500, "Error: " + e.getMessage());
